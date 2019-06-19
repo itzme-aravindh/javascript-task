@@ -1,0 +1,249 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q&A Task</title>
+   <link rel="stylesheet" href="assets/css/task1.css">
+   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <script src="assets/css/task1.js"></script>
+  <style>
+
+  </style>
+</head>
+<body>
+<div class="page">
+	<h2 style="padding-top:20px;"> HTML TEST</h2>
+	<div class="question-area">
+		<div id="timer">
+			Remaining Time :
+		</div>
+		<div class="left-align">
+			<div id="question">
+			
+			</div>
+				<input id="Prev" type="button" name="question" value="Prev" onclick="PrevQuestion()">
+			<input id="next" type="button" name="question" value="Next" onclick="nextQuestion()">
+	
+		</div>
+	</div>
+	
+</div>
+<script>
+var JSON = [{"question":"HTML stands for?","options":["Hyper Text Markup Language","High Text Markup Language","Hyper Tabular Markup Language","None of these"],"answer":"Hyper Text Markup Language"},
+					{"question":" which of the following tag is used to mark a begining of paragraph ?","options":["td","br","tr","p"],"answer":"p"},
+					{"question":"From which tag descriptive list starts ?","options":["LL","DL","DS","DD"],"answer":"DL"},
+					{"question":"Correct HTML tag for the largest heading is","options":["head","h6","heading","h1"],"answer":"h1"},
+					{"question":"The attribute of form tag","options":["Method","Action","Both (a)&(b)","none of the above"],"answer":"Both (a)&(b)"},
+					{"question":"Markup tags tell the web browser","options":["How to organise the page","How to display the page","How to display message box on page","None of these"],"answer":"How to display the page"},
+					{"question":"www is based on which model?","options":["Local-server","Client-server","3-tier","None of these"],"answer":"Client-server"},
+					{"question":"What are Empty elements and is it valid?","options":["No, there is no such terms as Empty Element","Empty elements are element with no data","No, it is not valid to use Empty Element","None of these"],"answer":" Empty elements are element with no data"},
+					{"question":"Which of the following attributes of text box control allow to limit the maximum character?","options":["size","len","max length","all of these"],"answer":"max length"},
+					{"question":"Web pages starts with which of the following tag?","options":["Body","Title","Html","Form"],"answer":"Html"}];
+					console.log(JSON[0])
+function Question(obj)
+		{
+			var objKey = Object.keys(obj);
+			if (objKey.length !== 3)
+			{
+				this.question = "Invalid question object passed";
+			}
+			else
+			{
+				this.question = obj[objKey[0]];
+				this.options	= obj[objKey[1]];	
+				this.answer = obj[objKey[2]];		
+			}
+		}
+
+		
+
+		Question.prototype.displayQuestion = function(){
+				var html = this.question;
+				 	html += "<br><br>";
+				 	this.options.forEach(function(val){
+				 		html += "<input type='radio' name='option' class='options' value='"+val+"'>"+val+"</input><br>";
+				 	});
+		
+				return html;
+		}
+
+		Question.prototype.isCorrect	= function(reply){
+				return reply === this.answer;
+		}
+
+
+
+
+		var counter = 1;	
+		var score = 0;			
+		var displayElement = document.getElementById("question");  
+		var nextButton = document.getElementById("next");	
+		var PrevButton = document.getElementById("Prev");	
+
+		var timerr = document.getElementById("timer");		
+		var intTag = null;									
+
+		displayOnBrowserLoad();
+
+		setTimeout(showQuestion,5000);	
+		setTimeout(startTimer,5000);			
+
+
+
+
+
+		function displayOnBrowserLoad()
+		{
+			 displayElement.innerHTML = "Question will be displayed here"; 
+
+		}
+
+		function showQuestion()
+		{
+			var randInt = Math.floor(Math.random()*(JSON.length));	
+			var questObject = new Question(JSON[randInt]);			
+			
+			displayElement.innerHTML = (counter)+". "+questObject.displayQuestion();
+			if(counter<=9) {
+nextButton.value = "Next";}
+else {nextButton.value = "save";
+console.log(JSON)	}		
+
+			window.questObject = questObject; 						
+																	
+		}
+
+
+
+		function nextQuestion()
+		{	
+console.log(JSON)
+			if(nextButton.value == "Start Again")		
+			{
+				startTimer();
+			
+			}
+
+			var picked = "";
+			
+			
+			
+			var input = document.getElementsByClassName("options");
+			console.log(input)
+			for(var i=0;i<input.length;i++)
+			{
+				if(input[i].checked)
+				{
+					picked = input[i].value;
+				}
+			}
+			if(questObject.isCorrect(picked))
+			{
+				score += 1;		
+			}
+			counter +=1 ;		
+
+			showQuestion();
+
+			if(counter===11)
+			{
+				terminateQuiz();	
+				
+			}
+			
+		}
+// prev question//
+
+		function PrevQuestion()
+		{	
+console.log(JSON)
+			if(PrevButton.value == "Start Again")		
+			{
+				startTimer();
+			
+			}
+
+			var picked = "";
+			
+			
+			
+			var input = document.getElementsByClassName("options");
+			console.log(input)
+			for(var i=0;i<input.length;i++)
+			{
+				if(input[i].checked)
+				{
+					picked = input[i].value;
+				}
+			}
+			if(questObject.isCorrect(picked))
+			{
+				score += 1;		
+			}
+			counter -=1 ;		
+
+			showQuestion();
+
+			if(counter===0)
+			{
+			
+			}
+			
+		}
+	
+	
+		function terminateQuiz()
+		{
+				displayOnBrowserLoad();	
+				alert("Your score is " + score);
+				counter = 0;
+				score = 0;
+				nextButton.value = "Start Again";
+			 	clearInterval(intTag);
+			 	timerr.innerHTML = "--:--"
+		}
+
+
+		function startTimer()
+		{
+			var min = 0;
+			var sec = 60;
+			var m;
+			var s;
+			intTag = setInterval(function(){
+				sec -= 1;
+				if(sec==-1)
+				{
+					min -= 1;
+					sec = 60;
+				}
+				m = (min<10) ? ("0"+min):min;
+				s = (sec<10) ? ("0"+sec):sec;
+				timerr.innerHTML = m+":"+s;
+
+			},1000);
+		}
+	
+		
+		
+		
+		setInterval(function(){
+			if(timerr.innerHTML == "00:00")
+			{
+			displayOnBrowserLoad();	
+				alert("TIme Expired");
+				counter = 0;
+				score = 0;
+				nextButton.value = "Start Again";
+			 	clearInterval(intTag);
+			 	timerr.innerHTML = "--:--"
+			}
+		},1000);
+		console.log(JSON[0].question)
+
+		
+	
+</script>
+</body>
+</html>
